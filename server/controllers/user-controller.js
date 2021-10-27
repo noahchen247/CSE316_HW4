@@ -78,7 +78,71 @@ registerUser = async (req, res) => {
     }
 }
 
+loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+        const existingUser = await User.findOne({ email: email });
+        if (!existingUser) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "The email and/or password entered is incorrect."
+                });
+        }
+        const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
+        if (!passwordCorrect) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "The email and/or password entered is incorrect."
+                });
+        }
+        const token = auth.signToken(existingUser);
+
+        await res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        }).status(200).json({
+            success: true,
+            user: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,
+                email: existingUser.email
+            }
+        }).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+logoutUser = async (req, res) => {
+    try {
+        await res.cookie('token', 'none', {
+            expires: new Date(Date.now() + 5 * 1000),
+            httpOnly: true,
+        })
+        res.status(200).json({ 
+            success: true, 
+            message: 'User logged out successfully' 
+        }).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
 module.exports = {
     getLoggedIn,
-    registerUser
+    registerUser,
+    loginUser,
+    logoutUser
 }
