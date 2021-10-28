@@ -127,8 +127,7 @@ loginUser = async (req, res) => {
 logoutUser = async (req, res) => {
     try {
         await res.cookie('token', 'none', {
-            expires: new Date(Date.now() + 5 * 1000),
-            httpOnly: true,
+            expires: new Date(0)
         })
         res.status(200).json({ 
             success: true, 

@@ -228,11 +228,24 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.filterPairs = async function (pairs) {
+        for (const [index, pair] of pairs.entries()) {
+            let checkList = await api.getTop5ListById(pair._id);
+            if (checkList.data.success) {
+                if (checkList.data.top5List.ownerEmail !== auth.user.email) {
+                    pairs.splice(index, 1);
+                }
+            }
+        }
+        return pairs;
+    }
+
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
         const response = await api.getTop5ListPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
+            pairsArray = await store.filterPairs(pairsArray);
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: pairsArray
