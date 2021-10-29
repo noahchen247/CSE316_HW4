@@ -15,6 +15,7 @@ function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [draggedTo, setDraggedTo] = useState(0);
+    const [text, setText] = useState(props.text);
 
     function handleDragStart(event, targetId) {
         event.dataTransfer.setData("item", targetId);
@@ -48,6 +49,31 @@ function Top5Item(props) {
         store.addMoveItemTransaction(sourceId, targetId);
     }
 
+    function handleToggleEdit(event) {
+        event.stopPropagation();
+        toggleEdit();
+    }
+
+    function toggleEdit() {
+        let newActive = !editActive;
+        if (newActive) {
+            store.setIsItemEditActive();
+        }
+        setEditActive(newActive);
+    }
+
+    function handleKeyPress(event) {
+        if (event.code === "Enter") {
+            let id = event.target.id.substring("item-".length) - 1;
+            store.addUpdateItemTransaction(id, text);
+            toggleEdit();
+        }
+    }
+
+    function handleUpdateText(event) {
+        setText(event.target.value);
+    }
+
     let { index } = props;
 
     let itemClass = "top5-item";
@@ -55,8 +81,8 @@ function Top5Item(props) {
         itemClass = "top5-item-dragged-to";
     }
 
-    return (
-            <ListItem
+    let itemElement =
+        <ListItem
                 id={'item-' + (index+1)}
                 key={props.key}
                 className={itemClass}
@@ -83,13 +109,33 @@ function Top5Item(props) {
                 }}
             >
             <Box sx={{ p: 1 }}>
-                <IconButton aria-label='edit'>
+                <IconButton 
+                    aria-label='edit'
+                    onClick={handleToggleEdit}>
                     <EditIcon style={{fontSize:'48pt'}}  />
                 </IconButton>
             </Box>
                 <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
-            </ListItem>
-    )
+            </ListItem>;
+    if (editActive) {
+        itemElement = 
+            <TextField
+                required
+                fullWidth
+                id={'item-' + (index+1)}
+                key={props.key}
+                className={itemClass}
+                inputProps={{style: {fontSize: 48}}}
+                label="Top 5 Item Name"
+                name="name"
+                autoComplete="Top 5 Item Name"
+                defaultValue={props.text}
+                onKeyPress={handleKeyPress}
+                onChange={handleUpdateText}
+            />
+    }
+
+    return itemElement;
 }
 
 export default Top5Item;
