@@ -29,6 +29,7 @@ function ListCard(props) {
 
     function handleToggleEdit(event) {
         event.stopPropagation();
+        setText(idNamePair.name);
         toggleEdit();
     }
 

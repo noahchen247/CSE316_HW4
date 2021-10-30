@@ -84,7 +84,6 @@ function Top5Item(props) {
     let itemElement =
         <ListItem
                 id={'item-' + (index+1)}
-                key={props.key}
                 className={itemClass}
                 onDragStart={(event) => {
                     handleDragStart(event, (index+1))
@@ -123,7 +122,6 @@ function Top5Item(props) {
                 required
                 fullWidth
                 id={'item-' + (index+1)}
-                key={props.key}
                 className={itemClass}
                 inputProps={{style: {fontSize: 48}}}
                 label="Top 5 Item Name"
