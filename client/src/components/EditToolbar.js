@@ -23,8 +23,8 @@ function EditToolbar() {
     function handleClose() {
         store.closeCurrentList();
     }
-    let undoStatus = store.setUndoButton();
-    let redoStatus = store.setRedoButton();
+    let undoStatus = !store.canUndo();
+    let redoStatus = !store.canRedo();
     let editStatus = false;
     if (store.isItemEditActive) {
         editStatus = true;
