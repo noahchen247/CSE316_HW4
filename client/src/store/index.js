@@ -291,6 +291,16 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.showDeleteListModal = function () {
+        let modal = document.getElementById("delete-modal");
+        modal.classList.add("is-visible");
+    }
+
+    store.hideDeleteListModal = function () {
+        let modal = document.getElementById("delete-modal");
+        modal.classList.remove("is-visible");
+    }
+
     // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING
     // OF A LIST, WHICH INCLUDES DEALING WITH THE TRANSACTION STACK. THE
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
