@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { GlobalStoreContext } from '../store'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ErrorModal from "../components/ErrorModal";
 
 const theme = createTheme();
 
@@ -33,7 +34,8 @@ export default function SignInSide() {
   
     return (
         <ThemeProvider theme={theme}>
-          <Grid container component="main" sx={{ height: '100vh' }}>
+        <ErrorModal/>
+          <Grid container component="main" sx={{ height: '76vh' }}>
             <CssBaseline />
             <Grid
               item

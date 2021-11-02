@@ -10,13 +10,15 @@ export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     REGISTER_USER: "REGISTER_USER",
     LOGIN_USER: "LOGIN_USER",
-    LOGOUT_USER: "LOGOUT_USER"
+    LOGOUT_USER: "LOGOUT_USER",
+    ALERT_ERROR: "ALERT_ERROR"
 }
 
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
-        loggedIn: false
+        loggedIn: false,
+        error: null
     });
     const history = useHistory();
 
@@ -30,25 +32,36 @@ function AuthContextProvider(props) {
             case AuthActionType.GET_LOGGED_IN: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: payload.loggedIn
+                    loggedIn: payload.loggedIn,
+                    error: null
                 });
             }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    error: null
                 })
             }
             case AuthActionType.LOGIN_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    error: null
                 })
             }
             case AuthActionType.LOGOUT_USER: {
                 return setAuth({
                     user: null,
-                    loggedIn: false
+                    loggedIn: false,
+                    error: null
+                })
+            }
+            case AuthActionType.ALERT_ERROR: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    error: payload.error
                 })
             }
             default:
@@ -90,7 +103,13 @@ function AuthContextProvider(props) {
             }
         } catch (err) {
             if (err.response) {
-                console.log(err.response.data.errorMessage);
+                //console.log(err.response.data.errorMessage);
+                authReducer({
+                    type: AuthActionType.ALERT_ERROR,
+                    payload: {
+                        error: err.response.data.errorMessage
+                    }
+                })
             }
         }
     }
@@ -110,7 +129,13 @@ function AuthContextProvider(props) {
             }
         } catch (err) {
             if (err.response) {
-                window.alert(err.response.data.errorMessage);
+                //window.alert(err.response.data.errorMessage);
+                authReducer({
+                    type: AuthActionType.ALERT_ERROR,
+                    payload: {
+                        error: err.response.data.errorMessage
+                    }
+                })
             }
         }
     }
@@ -130,6 +155,15 @@ function AuthContextProvider(props) {
                 console.log(err.response.data.errorMessage);
             }
         }
+    }
+
+    auth.hideCloseModal = async function() {
+        authReducer({
+            type: AuthActionType.ALERT_ERROR,
+            payload: {
+                error: null
+            }
+        })
     }
 
     return (
