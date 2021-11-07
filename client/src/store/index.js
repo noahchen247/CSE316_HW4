@@ -158,6 +158,18 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.filterPairs = async function (pairs) {
+        for (const [index, pair] of pairs.entries()) {
+            let checkList = await api.getTop5ListById(pair._id);
+            if (checkList.data.success) {
+                if (checkList.data.top5List.ownerEmail !== auth.user.email) {
+                    pairs.splice(index, 1);
+                }
+            }
+        }
+        return pairs;
+    }
+
     // THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
     // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
@@ -175,6 +187,7 @@ function GlobalStoreContextProvider(props) {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
                             let pairsArray = response.data.idNamePairs;
+                            pairsArray = await store.filterPairs(pairsArray);
                             storeReducer({
                                 type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                 payload: {
@@ -226,18 +239,6 @@ function GlobalStoreContextProvider(props) {
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
         }
-    }
-
-    store.filterPairs = async function (pairs) {
-        for (const [index, pair] of pairs.entries()) {
-            let checkList = await api.getTop5ListById(pair._id);
-            if (checkList.data.success) {
-                if (checkList.data.top5List.ownerEmail !== auth.user.email) {
-                    pairs.splice(index, 1);
-                }
-            }
-        }
-        return pairs;
     }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
