@@ -22,6 +22,7 @@ const HomeScreen = () => {
         store.createNewList();
     }
     let listCard = "";
+    let addDisabled = false;
     if (store) {
         listCard = 
             <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
@@ -35,11 +36,15 @@ const HomeScreen = () => {
                 ))
             }
             </List>;
+        if (store.isListNameEditActive) {
+            addDisabled = true;
+        }
     }
     return (
         <div id="top5-list-selector">
             <div id="list-selector-heading">
             <Fab 
+                disabled={addDisabled}
                 color="primary" 
                 aria-label="add"
                 id="add-list-button"

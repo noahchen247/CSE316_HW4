@@ -80,6 +80,10 @@ function Top5Item(props) {
     if (draggedTo) {
         itemClass = "top5-item-dragged-to";
     }
+    let itemDisabled = false;
+    if (store.isItemEditActive) {
+        itemDisabled = true;
+    }
 
     let itemElement =
         <ListItem
@@ -109,6 +113,7 @@ function Top5Item(props) {
             >
             <Box sx={{ p: 1 }}>
                 <IconButton 
+                    disabled={itemDisabled}
                     aria-label='edit'
                     onClick={handleToggleEdit}>
                     <EditIcon style={{fontSize:'48pt'}}  />
