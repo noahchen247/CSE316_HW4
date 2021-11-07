@@ -27,6 +27,8 @@ function EditToolbar() {
     let redoStatus = !store.canRedo();
     let editStatus = false;
     if (store.isItemEditActive) {
+        undoStatus = true;
+        redoStatus = true;
         editStatus = true;
     }
     return (
