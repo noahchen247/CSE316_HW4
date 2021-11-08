@@ -23,6 +23,7 @@ function Top5Item(props) {
 
     function handleDragOver(event) {
         event.preventDefault();
+        setDraggedTo(true);
     }
 
     function handleDragEnter(event) {
